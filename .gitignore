@@ -2,6 +2,7 @@
 
 # production
 /build
+/xlsx/result.xlsx
 
 npm-debug.log*
 yarn-debug.log*
