@@ -4,16 +4,11 @@ import { parse } from 'csv-parse';
 export const getRecordsFromCsv = async () => {
   const records: [string, string][] = [];
 
-  fs.createReadStream('csv/data.csv')
-    .pipe(parse({ delimiter: ',' }))
-    .on('data', (csvrow) => {
-      records.push(csvrow);
-    })
-    .on('end', () => {
-      records.forEach((r, i) => {
-        // console.log(i, r);
-      });
-    });
+  const stream = fs.createReadStream('csv/data.csv').pipe(parse({ delimiter: ',' }));
 
-  return records;
+  return new Promise<typeof records>((resolve, reject) => {
+    stream.on('data', (csvrow) => records.push(csvrow));
+    stream.on('end', () => resolve(records));
+    stream.on('error', (error) => reject(error));
+  });
 };
